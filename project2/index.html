@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School System Website</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink: #ff99cc;
+      --light-pink: #fef6fb;
+      --dark-pink: #d9579c;
+      --text: #493443;
+      --border: #f0dce8;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--light-pink);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      padding: 36px;
+      border-radius: 22px;
+      box-shadow: 0 10px 35px #e9c8db70;
+      text-align: center;
+    }
+
+    .logo {
+      width: 65px;
+      height: 65px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 16px;
+      border-radius: 20px;
+      background: var(--pink);
+      font-size: 30px;
+    }
+
+    h1 { font-size: 25px; margin: 0 0 8px; }
+    h2 { font-size: 18px; }
+    .muted { color: #897684; font-size: 13px; }
+
+    .field { margin: 16px 0; text-align: left; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline-color: var(--dark-pink);
+    }
+
+    .primary-btn {
+      background: var(--dark-pink);
+      color: white;
+      border: 0;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .primary-btn:hover { background: #c84489; }
+
+    .secondary-btn {
+      background: white;
+      color: var(--dark-pink);
+      border: 1px solid var(--border);
+      padding: 9px 12px;
+      border-radius: 9px;
+    }
+
+    .app-header {
+      background: var(--pink);
+      padding: 18px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand { font-size: 19px; font-weight: 700; }
+    .brand small { display: block; font-size: 11px; font-weight: 400; }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 225px minmax(0, 1fr);
+      min-height: calc(100vh - 76px);
+    }
+
+    aside {
+      padding: 22px 14px;
+      background: white;
+      border-right: 1px solid var(--border);
+    }
+
+    .nav-label {
+      padding: 8px 12px;
+      color: #a18b9a;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .nav-btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 5px;
+      padding: 11px 12px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      text-align: left;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: var(--light-pink);
+      color: var(--dark-pink);
+      font-weight: 600;
+    }
+
+    main { min-width: 0; padding: 28px; }
+
+    .page-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-heading h1 { margin-bottom: 5px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .stat-card, .panel {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: white;
+      margin-bottom: 18px;
+    }
+
+    .stat-card .number {
+      color: var(--dark-pink);
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .stat-card .label { color: #897684; font-size: 12px; }
+    .panel h2 { margin-top: 0; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 16px;
+    }
+
+    .actions { display: flex; gap: 10px; margin-top: 14px; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+    th, td { padding: 12px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th { background: var(--light-pink); color: #805b72; }
+    .empty { text-align: center; color: #897684; padding: 25px; }
+    .status { color: var(--dark-pink); font-size: 13px; margin-top: 10px; }
+    .footer { text-align: center; color: #9a8695; font-size: 11px; padding: 20px; }
+
+    @media (max-width: 760px) {
+      .app-layout { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid var(--border); }
+      .nav-menu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      main { padding: 18px; }
+      .stats, .form-grid { grid-template-columns: 1fr; }
+      .app-header { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <section id="loginSection" class="login-page">
+    <div class="login-card">
+      <div class="logo">🎓</div>
+      <h1>Welcome Back!</h1>
+      <p class="muted">School System Management Portal</p>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="username">Username or Email</label>
+          <input id="username" required placeholder="Enter your username">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" required placeholder="Enter your password">
+        </div>
+        <button class="primary-btn" type="submit" style="width:100%">Log In</button>
+      </form>
+      <p class="muted">Prototype only: any non-empty username and password will work.</p>
+    </div>
+  </section>
+
+  <section id="appSection" class="hidden">
+    <header class="app-header">
+      <div class="brand">🎓 School System<small>Management Dashboard</small></div>
+      <button class="secondary-btn" id="logoutBtn">Log Out</button>
+    </header>
+
+    <div class="app-layout">
+      <aside>
+        <div class="nav-label">Main Menu</div>
+        <nav class="nav-menu" id="navigation">
+          <button class="nav-btn active" data-page="dashboard">🏠 Dashboard</button>
+          <button class="nav-btn" data-page="students">👩‍🎓 Students</button>
+          <button class="nav-btn" data-page="courses">📚 Courses</button>
+          <button class="nav-btn" data-page="faculty">👩‍🏫 Faculty</button>
+          <button class="nav-btn" data-page="studentCourses">📝 Student-Course</button>
+          <button class="nav-btn" data-page="facultyCourses">📋 Faculty-Course</button>
+          <button class="nav-btn" data-page="buildings">🏫 Buildings</button>
+        </nav>
+      </aside>
+
+      <main>
+        <div id="dashboardPage">
+          <div class="page-heading">
+            <div>
+              <h1>Hello, welcome! 💗</h1>
+              <p class="muted">Here is an overview of your school system.</p>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-card"><div class="label">Student Records</div><div class="number" id="studentCount">0</div></div>
+            <div class="stat-card"><div class="label">Courses</div><div class="number" id="courseCount">0</div></div>
+            <div class="stat-card"><div class="label">Faculty Members</div><div class="number" id="facultyCount">0</div></div>
+          </div>
+
+          <div class="panel">
+            <h2>Welcome to your dashboard ✨</h2>
+            <p class="muted">Use the menu to explore school records and test the prototype.</p>
+            <button class="primary-btn" data-go="students">Manage Students</button>
+          </div>
+
+          <div class="panel">
+            <h2>About This Prototype</h2>
+            <p class="muted">This prototype demonstrates navigation and record-management screens. Records added during testing are temporary and reset when the page refreshes.</p>
+          </div>
+        </div>
+
+        <div id="dataPage" class="hidden">
+          <div class="page-heading">
+            <div>
+              <h1 id="sectionTitle">Students</h1>
+              <p class="muted" id="sectionDescription">View and manage school records.</p>
+            </div>
+            <button class="primary-btn" id="newRecordBtn">+ Add Record</button>
+          </div>
+
+          <div class="panel hidden" id="recordFormPanel">
+            <h2 id="formTitle">Add Record</h2>
+            <form id="recordForm">
+              <div class="form-grid" id="formFields"></div>
+              <div class="actions">
+                <button class="primary-btn" type="submit">Save Record</button>
+                <button class="secondary-btn" type="button" id="cancelBtn">Cancel</button>
+              </div>
+              <div class="status" id="formStatus"></div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <h2>Records</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr id="tableHead"></tr></thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">School System Website · Project 2 Prototype</div>
+      </main>
+    </div>
+  </section>
+
+  <script>
+    const definitions = {
+      students: {
+        title: 'Student Management',
+        description: 'View and manage student information.',
+        fields: [
+          ['studentId', 'Student ID'], ['firstName', 'First Name'],
+          ['lastName', 'Last Name'], ['address', 'Address'],
+          ['email', 'Email'], ['phone', 'Phone Number'], ['major', 'Major']
+        ]
+      },
+      courses: {
+        title: 'Course Management',
+        description: 'Organize course information.',
+        fields: [['courseId', 'Course ID'], ['courseName', 'Course Name'], ['credits', 'Credits']]
+      },
+      faculty: {
+        title: 'Faculty Management',
+        description: 'Organize faculty member information.',
+        fields: [['facultyId', 'Faculty ID'], ['firstName', 'First Name'], ['lastName', 'Last Name'], ['email', 'Email'], ['phone', 'Phone Number']]
+      },
+      studentCourses: {
+        title: 'Student-Course Management',
+        description: 'View relationships between students and courses.',
+        fields: [['studentId', 'Student ID'], ['courseId', 'Course ID'], ['semester', 'Semester']]
+      },
+      facultyCourses: {
+        title: 'Faculty-Course Management',
+        description: 'View faculty course assignments.',
+        fields: [['facultyId', 'Faculty ID'], ['courseId', 'Course ID'], ['semester', 'Semester']]
+      },
+      buildings: {
+        title: 'Building Management',
+        description: 'Organize school building information.',
+        fields: [['buildingId', 'Building ID'], ['buildingName', 'Building Name'], ['address', 'Address']]
+      }
+    };
+
+    const records = {
+      students: [], courses: [], faculty: [],
+      studentCourses: [], facultyCourses: [], buildings: []
+    };
+
+    let currentPage = 'dashboard';
+    let editingIndex = null;
+
+    const loginSection = document.getElementById('loginSection');
+    const appSection = document.getElementById('appSection');
+    const dashboardPage = document.getElementById('dashboardPage');
+    const dataPage = document.getElementById('dataPage');
+    const recordFormPanel = document.getElementById('recordFormPanel');
+    const recordForm = document.getElementById('recordForm');
+
+    document.getElementById('loginForm').addEventListener('submit', event => {
+      event.preventDefault();
+      loginSection.classList.add('hidden');
+      appSection.classList.remove('hidden');
+      showPage('dashboard');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      appSection.classList.add('hidden');
+      loginSection.classList.remove('hidden');
+      document.getElementById('loginForm').reset();
+    });
+
+    document.getElementById('navigation').addEventListener('click', event => {
+      const button = event.target.closest('[data-page]');
+      if (button) showPage(button.dataset.page);
+    });
+
+    document.querySelectorAll('[data-go]').forEach(button => {
+      button.addEventListener('click', () => showPage(button.dataset.go));
+    });
+
+    function showPage(page) {
+      currentPage = page;
+      document.querySelectorAll('.nav-btn').forEach(button => {
+        button.classList.toggle('active', button.dataset.page === page);
+      });
+
+      const isDashboard = page === 'dashboard';
+      dashboardPage.classList.toggle('hidden', !isDashboard);
+      dataPage.classList.toggle('hidden', isDashboard);
+
+      if (!isDashboard && definitions[page]) {
+        document.getElementById('sectionTitle').textContent = definitions[page].title;
+        document.getElementById('sectionDescription').textContent = definitions[page].description;
+        closeForm();
+        renderTable();
+      }
+      updateCounts();
+    }
+
+    document.getElementById('newRecordBtn').addEventListener('click', () => openForm());
+    document.getElementById('cancelBtn').addEventListener('click', closeForm);
+
+    function openForm(record = null, index = null) {
+      editingIndex = index;
+      const fieldsContainer = document.getElementById('formFields');
+      fieldsContainer.replaceChildren();
+      document.getElementById('formTitle').textContent = record ? 'Edit Record' : 'Add Record';
+
+      definitions[currentPage].fields.forEach(([key, label]) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'field';
+
+        const inputLabel = document.createElement('label');
+        inputLabel.htmlFor = 'field_' + key;
+        inputLabel.textContent = label;
+
+        const input = document.createElement('input');
+        input.id = 'field_' + key;
+        input.name = key;
+        input.required = true;
+        input.placeholder = 'Enter ' + label.toLowerCase();
+        input.value = record ? (record[key] || '') : '';
+
+        wrapper.append(inputLabel, input);
+        fieldsContainer.append(wrapper);
+      });
+
+      recordFormPanel.classList.remove('hidden');
+      recordFormPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function closeForm() {
+      recordFormPanel.classList.add('hidden');
+      recordForm.reset();
+      editingIndex = null;
+    }
+
+    recordForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const record = Object.fromEntries(new FormData(recordForm).entries());
+
+      if (editingIndex === null) records[currentPage].push(record);
+      else records[currentPage][editingIndex] = record;
+
+      closeForm();
+      renderTable();
+      updateCounts();
+    });
+
+    function renderTable() {
+      const definition = definitions[currentPage];
+      const header = document.getElementById('tableHead');
+      const body = document.getElementById('tableBody');
+      header.replaceChildren();
+      body.replaceChildren();
+
+      definition.fields.forEach(([, label]) => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        header.append(th);
+      });
+
+      const actionHeading = document.createElement('th');
+      actionHeading.textContent = 'Actions';
+      header.append(actionHeading);
+
+      if (records[currentPage].length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = definition.fields.length + 1;
+        cell.className = 'empty';
+        cell.textContent = 'No records yet. Select “Add Record” to get started.';
+        row.append(cell);
+        body.append(row);
+        return;
+      }
+
+      records[currentPage].forEach((record, index) => {
+        const row = document.createElement('tr');
+
+        definition.fields.forEach(([key]) => {
+          const cell = document.createElement('td');
+          cell.textContent = record[key] || '';
+          row.append(cell);
+        });
+
+        const actionCell = document.createElement('td');
+        const editButton = document.createElement('button');
+        editButton.className = 'secondary-btn';
+        editButton.textContent = 'Edit';
+        editButton.addEventListener('click', () => openForm(record, index));
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'secondary-btn';
+        deleteButton.textContent = 'Delete';
+        deleteButton.style.marginLeft = '6px';
+        deleteButton.addEventListener('click', () => {
+          if (confirm('Delete this record?')) {
+            records[currentPage].splice(index, 1);
+            renderTable();
+            updateCounts();
+          }
+        });
+
+        actionCell.append(editButton, deleteButton);
+        row.append(actionCell);
+        body.append(row);
+      });
+    }
+
+    function updateCounts() {
+      document.getElementById('studentCount').textContent = records.students.length;
+      document.getElementById('courseCount').textContent = records.courses.length;
+      document.getElementById('facultyCount').textContent = records.faculty.length;
+    }
+  </script>
+</body>
+</html>
